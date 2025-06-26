@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyMovie - Website Xem Phim Online</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="light-effect"></div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-film"></i>
+                <span>MyMovie</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="#home" class="nav-link active">Trang chủ</a>
+                <a href="#movies" class="nav-link">Phim lẻ</a>
+                <a href="#series" class="nav-link">Phim bộ</a>
+                <a href="#genres" class="nav-link">Thể loại</a>
+                <a href="#search" class="nav-link">Tìm kiếm</a>
+            </nav>
+            <div class="user-menu">
+                <i class="fas fa-search search-btn"></i>
+                <i class="fas fa-user user-btn"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Chào mừng đến với MyMovie</h1>
+            <p class="hero-subtitle">Khám phá thế giới điện ảnh với hàng nghìn bộ phim chất lượng HD</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary">
+                    <i class="fas fa-play"></i>
+                    Xem ngay
+                </button>
+                <button class="btn btn-secondary">
+                    <i class="fas fa-info-circle"></i>
+                    Tìm hiểu thêm
+                </button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1489599611615-3bcb1e71e4e7?w=600&h=400&fit=crop" alt="Featured Movie" class="featured-img">
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section id="search" class="search-section">
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Tìm kiếm phim, diễn viên, đạo diễn...">
+                <button class="search-submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Movies Section -->
+    <section id="movies" class="movies-section">
+        <div class="container">
+            <h2 class="section-title">Phim Mới Nhất</h2>
+            <div class="movies-grid" id="moviesGrid">
+                <!-- Movies will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Series Section -->
+    <section id="series" class="series-section">
+        <div class="container">
+            <h2 class="section-title">Phim Bộ Hot</h2>
+            <div class="series-grid" id="seriesGrid">
+                <!-- Series will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Genres Section -->
+    <section id="genres" class="genres-section">
+        <div class="container">
+            <h2 class="section-title">Thể Loại Phim</h2>
+            <div class="genres-grid">
+                <div class="genre-card" data-genre="action">
+                    <i class="fas fa-fist-raised"></i>
+                    <span>Hành Động</span>
+                </div>
+                <div class="genre-card" data-genre="comedy">
+                    <i class="fas fa-laugh"></i>
+                    <span>Hài Hước</span>
+                </div>
+                <div class="genre-card" data-genre="horror">
+                    <i class="fas fa-ghost"></i>
+                    <span>Kinh Dị</span>
+                </div>
+                <div class="genre-card" data-genre="romance">
+                    <i class="fas fa-heart"></i>
+                    <span>Lãng Mạn</span>
+                </div>
+                <div class="genre-card" data-genre="sci-fi">
+                    <i class="fas fa-rocket"></i>
+                    <span>Khoa Học Viễn Tưởng</span>
+                </div>
+                <div class="genre-card" data-genre="drama">
+                    <i class="fas fa-theater-masks"></i>
+                    <span>Chính Kịch</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Player Modal -->
+    <div id="videoModal" class="video-modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <div class="video-container">
+                <video id="videoPlayer" controls>
+                    <source src="" type="video/mp4">
+                    Trình duyệt của bạn không hỗ trợ video.
+                </video>
+            </div>
+            <div class="video-info">
+                <h3 id="videoTitle">Tên Phim</h3>
+                <p id="videoDescription">Mô tả phim sẽ hiển thị ở đây...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MyMovie</h3>
+                    <p>Website xem phim online chất lượng cao với kho phim phong phú và cập nhật liên tục.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Liên kết</h3>
+                    <ul>
+                        <li><a href="#about">Giới thiệu</a></li>
+                        <li><a href="#contact">Liên hệ</a></li>
+                        <li><a href="#terms">Điều khoản</a></li>
+                        <li><a href="#privacy">Bảo mật</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Theo dõi chúng tôi</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyMovie. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
