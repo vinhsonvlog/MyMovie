@@ -1,5 +1,5 @@
 // API Configuration
-const API_KEY = 'your-api-key-here'; // Bạn cần đăng ký tại https://www.themoviedb.org/
+const API_KEY = '5a2fd256e55eedf3756dea4673535533';
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -80,6 +80,11 @@ async function fetchMoviesFromAPI(category = 'popular', page = 1) {
     try {
         showLoading();
         const response = await fetch(`${API_BASE_URL}/movie/${category}?api_key=${API_KEY}&page=${page}&language=vi-VN`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
         
         const movies = data.results.map(movie => ({
@@ -90,7 +95,7 @@ async function fetchMoviesFromAPI(category = 'popular', page = 1) {
             image: movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://via.placeholder.com/300x400?text=No+Image',
             description: movie.overview || 'Không có mô tả',
             rating: movie.vote_average,
-            videoUrl: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4` // Demo video
+            videoUrl: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`
         }));
         
         hideLoading();
@@ -106,17 +111,22 @@ async function fetchSeriesFromAPI(page = 1) {
     try {
         showLoading();
         const response = await fetch(`${API_BASE_URL}/tv/popular?api_key=${API_KEY}&page=${page}&language=vi-VN`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
         
         const series = data.results.map(show => ({
             id: show.id,
             title: show.name,
-            year: show.first_air_date ? `${show.first_air_date.split('-')[0]}-${show.last_air_date ? show.last_air_date.split('-')[0] : 'Present'}` : 'N/A',
+            year: show.first_air_date ? `${show.first_air_date.split('-')[0]}` : 'N/A',
             genre: show.genre_ids[0] ? getGenreName(show.genre_ids[0]) : 'unknown',
             image: show.poster_path ? `${IMAGE_BASE_URL}${show.poster_path}` : 'https://via.placeholder.com/300x400?text=No+Image',
             description: show.overview || 'Không có mô tả',
             rating: show.vote_average,
-            videoUrl: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4` // Demo video
+            videoUrl: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4`
         }));
         
         hideLoading();
@@ -218,7 +228,7 @@ function createLoadingElement() {
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.8);
-        display: flex;
+        display: none;
         justify-content: center;
         align-items: center;
         z-index: 10000;
@@ -245,7 +255,7 @@ function createLoadingElement() {
     return loading;
 }
 
-// Fallback data nếu API không hoạt động
+// Enhanced fallback data với nhiều phim hơn
 function getFallbackMovies() {
     return [
         {
@@ -278,7 +288,56 @@ function getFallbackMovies() {
             rating: 8.8,
             videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
         },
-        // Thêm nhiều phim fallback khác...
+        {
+            id: 4,
+            title: "Titanic",
+            year: "1997",
+            genre: "romance",
+            image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=400&fit=crop",
+            description: "Câu chuyện tình yêu bất diệt trên con tàu định mệnh...",
+            rating: 7.9,
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+        },
+        {
+            id: 5,
+            title: "The Conjuring",
+            year: "2013",
+            genre: "horror",
+            image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=400&fit=crop",
+            description: "Câu chuyện kinh dị về gia đình bị ám ảnh bởi linh hồn...",
+            rating: 7.5,
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
+        },
+        {
+            id: 6,
+            title: "Deadpool",
+            year: "2016",
+            genre: "comedy",
+            image: "https://images.unsplash.com/photo-1489599611615-3bcb1e71e4e7?w=300&h=400&fit=crop",
+            description: "Siêu anh hùng bựa nhất vũ trụ Marvel...",
+            rating: 8.0,
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+        },
+        {
+            id: 7,
+            title: "Interstellar",
+            year: "2014",
+            genre: "sci-fi",
+            image: "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=300&h=400&fit=crop",
+            description: "Cuộc hành trình vượt thời không để tìm kiếm hành tinh mới...",
+            rating: 8.6,
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"
+        },
+        {
+            id: 8,
+            title: "The Shawshank Redemption",
+            year: "1994",
+            genre: "drama",
+            image: "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=300&h=400&fit=crop",
+            description: "Câu chuyện về hy vọng và tình bạn trong nhà tù...",
+            rating: 9.3,
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
+        }
     ];
 }
 
@@ -294,12 +353,47 @@ function getFallbackSeries() {
             rating: 9.3,
             videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
         },
-        // Thêm nhiều series fallback khác...
+        {
+            id: 2,
+            title: "Breaking Bad",
+            year: "2008-2013",
+            genre: "drama",
+            image: "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=300&h=400&fit=crop",
+            description: "Giáo viên hóa học trở thành trùm ma túy...",
+            rating: 9.5,
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+        },
+        {
+            id: 3,
+            title: "Stranger Things",
+            year: "2016-2022",
+            genre: "sci-fi",
+            image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=300&h=400&fit=crop",
+            description: "Những bí ẩn siêu nhiên ở thị trấn Hawkins...",
+            rating: 8.7,
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+        },
+        {
+            id: 4,
+            title: "The Office",
+            year: "2005-2013",
+            genre: "comedy",
+            image: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=300&h=400&fit=crop",
+            description: "Cuộc sống hài hước trong văn phòng...",
+            rating: 9.0,
+            videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
+        }
     ];
 }
 
 // Navigation
 document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🚀 Đang khởi tạo website...');
+    
+    // Load featured movie trước
+    await loadFeaturedMovie();
+    
+    // Load các content khác
     await loadMovies();
     await loadSeries();
     setupNavigation();
@@ -307,6 +401,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     setupVideoModal();
     setupGenreFilter();
     setupLoadMore();
+    
+    console.log('✅ Website đã sẵn sàng!');
 });
 
 function setupNavigation() {
@@ -329,17 +425,70 @@ function setupNavigation() {
 }
 
 async function loadMovies(category = 'popular') {
+    console.log(`📥 Đang tải phim từ category: ${category}`);
     moviesData = await fetchMoviesFromAPI(category);
     displayMovies(moviesData);
+    console.log(`✅ Đã tải ${moviesData.length} phim`);
 }
 
 async function loadSeries() {
+    console.log('📥 Đang tải phim bộ...');
     seriesData = await fetchSeriesFromAPI();
     displaySeries(seriesData);
+    console.log(`✅ Đã tải ${seriesData.length} phim bộ`);
+}
+
+// Thêm function để load featured movie
+async function loadFeaturedMovie() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/movie/popular?api_key=${API_KEY}&page=1&language=vi-VN`);
+        const data = await response.json();
+        
+        if (data.results && data.results.length > 0) {
+            const featuredMovie = data.results[0]; // Lấy phim đầu tiên
+            const heroImage = document.querySelector('.featured-img');
+            
+            if (heroImage && featuredMovie.backdrop_path) {
+                heroImage.src = `https://image.tmdb.org/t/p/w780${featuredMovie.backdrop_path}`;
+                heroImage.alt = featuredMovie.title;
+                
+                // Update hero content với thông tin phim nổi bật
+                const heroTitle = document.querySelector('.hero-title');
+                const heroSubtitle = document.querySelector('.hero-subtitle');
+                
+                if (heroTitle) {
+                    heroTitle.textContent = `Phim nổi bật: ${featuredMovie.title}`;
+                }
+                
+                if (heroSubtitle) {
+                    heroSubtitle.textContent = featuredMovie.overview || 'Khám phá thế giới điện ảnh với hàng nghìn bộ phim chất lượng HD';
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error loading featured movie:', error);
+        // Fallback nếu API lỗi
+        const heroImage = document.querySelector('.featured-img');
+        if (heroImage) {
+            heroImage.style.background = 'linear-gradient(45deg, #ff6b6b, #4ecdc4)';
+            heroImage.style.display = 'flex';
+            heroImage.style.alignItems = 'center';
+            heroImage.style.justifyContent = 'center';
+            heroImage.style.color = 'white';
+            heroImage.style.fontSize = '2rem';
+            heroImage.style.fontWeight = 'bold';
+            heroImage.innerHTML = '🎬 Featured Movie';
+        }
+    }
 }
 
 function displayMovies(movies) {
     const moviesGrid = document.getElementById('moviesGrid');
+    if (!moviesGrid) {
+        console.error('❌ Không tìm thấy moviesGrid element');
+        return;
+    }
+    
     moviesGrid.innerHTML = '';
     
     movies.forEach(movie => {
@@ -350,6 +499,11 @@ function displayMovies(movies) {
 
 function displaySeries(series) {
     const seriesGrid = document.getElementById('seriesGrid');
+    if (!seriesGrid) {
+        console.error('❌ Không tìm thấy seriesGrid element');
+        return;
+    }
+    
     seriesGrid.innerHTML = '';
     
     series.forEach(show => {
@@ -362,7 +516,7 @@ function createMovieCard(movie) {
     const card = document.createElement('div');
     card.className = 'movie-card';
     card.innerHTML = `
-        <img src="${movie.image}" alt="${movie.title}" loading="lazy">
+        <img src="${movie.image}" alt="${movie.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'">
         <div class="movie-info">
             <h3 class="movie-title">${movie.title}</h3>
             <p class="movie-year">${movie.year}</p>
@@ -378,7 +532,7 @@ function createSeriesCard(series) {
     const card = document.createElement('div');
     card.className = 'series-card';
     card.innerHTML = `
-        <img src="${series.image}" alt="${series.title}" loading="lazy">
+        <img src="${series.image}" alt="${series.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'">
         <div class="series-info">
             <h3 class="series-title">${series.title}</h3>
             <p class="series-year">${series.year}</p>
@@ -394,12 +548,17 @@ function setupVideoModal() {
     const modal = document.getElementById('videoModal');
     const closeBtn = document.querySelector('.close-modal');
     
-    closeBtn.addEventListener('click', closeVideoModal);
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeVideoModal();
-        }
-    });
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeVideoModal);
+    }
+    
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeVideoModal();
+            }
+        });
+    }
 }
 
 function openVideoModal(item) {
@@ -408,21 +567,25 @@ function openVideoModal(item) {
     const title = document.getElementById('videoTitle');
     const description = document.getElementById('videoDescription');
     
-    video.src = item.videoUrl;
-    title.textContent = item.title;
-    description.textContent = item.description;
+    if (video) video.src = item.videoUrl;
+    if (title) title.textContent = item.title;
+    if (description) description.textContent = item.description;
     
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden';
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
 }
 
 function closeVideoModal() {
     const modal = document.getElementById('videoModal');
     const video = document.getElementById('videoPlayer');
     
-    modal.style.display = 'none';
-    video.pause();
-    video.src = '';
+    if (modal) modal.style.display = 'none';
+    if (video) {
+        video.pause();
+        video.src = '';
+    }
     document.body.style.overflow = 'auto';
 }
 
@@ -430,25 +593,37 @@ function setupSearch() {
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.querySelector('.search-submit');
     
-    searchBtn.addEventListener('click', performSearch);
-    searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            performSearch();
-        }
-    });
+    if (searchBtn) {
+        searchBtn.addEventListener('click', performSearch);
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
 }
 
 async function performSearch() {
-    const searchTerm = document.getElementById('searchInput').value.trim();
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+    
+    const searchTerm = searchInput.value.trim();
     
     if (!searchTerm) return;
     
+    console.log(`🔍 Tìm kiếm: ${searchTerm}`);
     const results = await searchMoviesAndSeries(searchTerm);
     
     displayMovies(results.movies);
     displaySeries(results.series);
     
-    document.getElementById('movies').scrollIntoView({ behavior: 'smooth' });
+    const moviesSection = document.getElementById('movies');
+    if (moviesSection) {
+        moviesSection.scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
 function setupGenreFilter() {
