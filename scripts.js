@@ -87,15 +87,21 @@ async function fetchMoviesFromAPI(category = 'popular', page = 1) {
         
         const data = await response.json();
         
-        const movies = data.results.map(movie => ({
-            id: movie.id,
-            title: movie.title,
-            year: movie.release_date ? movie.release_date.split('-')[0] : 'N/A',
-            genre: movie.genre_ids[0] ? getGenreName(movie.genre_ids[0]) : 'unknown',
-            image: movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://via.placeholder.com/300x400?text=No+Image',
-            description: movie.overview || 'Không có mô tả',
-            rating: movie.vote_average,
-            videoUrl: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`
+        // Lấy trailer cho từng phim
+        const movies = await Promise.all(data.results.map(async (movie) => {
+            const trailerUrl = await fetchMovieTrailer(movie.id, 'movie');
+            
+            return {
+                id: movie.id,
+                title: movie.title,
+                year: movie.release_date ? movie.release_date.split('-')[0] : 'N/A',
+                genre: movie.genre_ids[0] ? getGenreName(movie.genre_ids[0]) : 'unknown',
+                image: movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://via.placeholder.com/300x400?text=No+Image',
+                description: movie.overview || 'Không có mô tả',
+                rating: movie.vote_average,
+                videoUrl: trailerUrl || `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`,
+                hasTrailer: !!trailerUrl
+            };
         }));
         
         hideLoading();
@@ -118,15 +124,21 @@ async function fetchSeriesFromAPI(page = 1) {
         
         const data = await response.json();
         
-        const series = data.results.map(show => ({
-            id: show.id,
-            title: show.name,
-            year: show.first_air_date ? `${show.first_air_date.split('-')[0]}` : 'N/A',
-            genre: show.genre_ids[0] ? getGenreName(show.genre_ids[0]) : 'unknown',
-            image: show.poster_path ? `${IMAGE_BASE_URL}${show.poster_path}` : 'https://via.placeholder.com/300x400?text=No+Image',
-            description: show.overview || 'Không có mô tả',
-            rating: show.vote_average,
-            videoUrl: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4`
+        // Lấy trailer cho từng series
+        const series = await Promise.all(data.results.map(async (show) => {
+            const trailerUrl = await fetchMovieTrailer(show.id, 'tv');
+            
+            return {
+                id: show.id,
+                title: show.name,
+                year: show.first_air_date ? `${show.first_air_date.split('-')[0]}` : 'N/A',
+                genre: show.genre_ids[0] ? getGenreName(show.genre_ids[0]) : 'unknown',
+                image: show.poster_path ? `${IMAGE_BASE_URL}${show.poster_path}` : 'https://via.placeholder.com/300x400?text=No+Image',
+                description: show.overview || 'Không có mô tả',
+                rating: show.vote_average,
+                videoUrl: trailerUrl || `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4`,
+                hasTrailer: !!trailerUrl
+            };
         }));
         
         hideLoading();
@@ -149,26 +161,37 @@ async function searchMoviesAndSeries(query) {
         const movieData = await movieResponse.json();
         const seriesData = await seriesResponse.json();
         
-        const movies = movieData.results.map(movie => ({
-            id: movie.id,
-            title: movie.title,
-            year: movie.release_date ? movie.release_date.split('-')[0] : 'N/A',
-            genre: movie.genre_ids[0] ? getGenreName(movie.genre_ids[0]) : 'unknown',
-            image: movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://via.placeholder.com/300x400?text=No+Image',
-            description: movie.overview || 'Không có mô tả',
-            rating: movie.vote_average,
-            videoUrl: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`
+        // Lấy trailer cho search results
+        const movies = await Promise.all(movieData.results.slice(0, 10).map(async (movie) => {
+            const trailerUrl = await fetchMovieTrailer(movie.id, 'movie');
+            
+            return {
+                id: movie.id,
+                title: movie.title,
+                year: movie.release_date ? movie.release_date.split('-')[0] : 'N/A',
+                genre: movie.genre_ids[0] ? getGenreName(movie.genre_ids[0]) : 'unknown',
+                image: movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://via.placeholder.com/300x400?text=No+Image',
+                description: movie.overview || 'Không có mô tả',
+                rating: movie.vote_average,
+                videoUrl: trailerUrl || `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`,
+                hasTrailer: !!trailerUrl
+            };
         }));
         
-        const series = seriesData.results.map(show => ({
-            id: show.id,
-            title: show.name,
-            year: show.first_air_date ? show.first_air_date.split('-')[0] : 'N/A',
-            genre: show.genre_ids[0] ? getGenreName(show.genre_ids[0]) : 'unknown',
-            image: show.poster_path ? `${IMAGE_BASE_URL}${show.poster_path}` : 'https://via.placeholder.com/300x400?text=No+Image',
-            description: show.overview || 'Không có mô tả',
-            rating: show.vote_average,
-            videoUrl: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4`
+        const series = await Promise.all(seriesData.results.slice(0, 10).map(async (show) => {
+            const trailerUrl = await fetchMovieTrailer(show.id, 'tv');
+            
+            return {
+                id: show.id,
+                title: show.name,
+                year: show.first_air_date ? show.first_air_date.split('-')[0] : 'N/A',
+                genre: show.genre_ids[0] ? getGenreName(show.genre_ids[0]) : 'unknown',
+                image: show.poster_path ? `${IMAGE_BASE_URL}${show.poster_path}` : 'https://via.placeholder.com/300x400?text=No+Image',
+                description: show.overview || 'Không có mô tả',
+                rating: show.vote_average,
+                videoUrl: trailerUrl || `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4`,
+                hasTrailer: !!trailerUrl
+            };
         }));
         
         hideLoading();
@@ -563,11 +586,38 @@ function setupVideoModal() {
 
 function openVideoModal(item) {
     const modal = document.getElementById('videoModal');
-    const video = document.getElementById('videoPlayer');
+    const videoContainer = document.querySelector('.video-container');
     const title = document.getElementById('videoTitle');
     const description = document.getElementById('videoDescription');
     
-    if (video) video.src = item.videoUrl;
+    // Xóa video cũ
+    videoContainer.innerHTML = '';
+    
+    if (item.hasTrailer && item.videoUrl.includes('youtube.com')) {
+        // Hiển thị YouTube trailer
+        const iframe = document.createElement('iframe');
+        iframe.src = item.videoUrl;
+        iframe.width = '100%';
+        iframe.height = '400';
+        iframe.frameBorder = '0';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        iframe.style.borderRadius = '15px';
+        videoContainer.appendChild(iframe);
+    } else {
+        // Hiển thị video demo fallback
+        const video = document.createElement('video');
+        video.id = 'videoPlayer';
+        video.controls = true;
+        video.style.width = '100%';
+        video.style.borderRadius = '15px';
+        video.innerHTML = `
+            <source src="${item.videoUrl}" type="video/mp4">
+            Trình duyệt của bạn không hỗ trợ video.
+        `;
+        videoContainer.appendChild(video);
+    }
+    
     if (title) title.textContent = item.title;
     if (description) description.textContent = item.description;
     
@@ -579,13 +629,23 @@ function openVideoModal(item) {
 
 function closeVideoModal() {
     const modal = document.getElementById('videoModal');
-    const video = document.getElementById('videoPlayer');
+    const videoContainer = document.querySelector('.video-container');
     
     if (modal) modal.style.display = 'none';
-    if (video) {
+    
+    // Dừng và xóa tất cả video/iframe
+    const videos = videoContainer.querySelectorAll('video');
+    const iframes = videoContainer.querySelectorAll('iframe');
+    
+    videos.forEach(video => {
         video.pause();
         video.src = '';
-    }
+    });
+    
+    iframes.forEach(iframe => {
+        iframe.src = '';
+    });
+    
     document.body.style.overflow = 'auto';
 }
 
@@ -761,3 +821,25 @@ setInterval(() => {
     
     document.body.style.filter = `brightness(${brightnessValue})`;
 }, 200);
+
+// Thêm function để lấy video trailer
+async function fetchMovieTrailer(movieId, type = 'movie') {
+    try {
+        const response = await fetch(`${API_BASE_URL}/${type}/${movieId}/videos?api_key=${API_KEY}&language=en-US`);
+        const data = await response.json();
+        
+        // Tìm trailer trên YouTube
+        const trailer = data.results.find(video => 
+            video.type === 'Trailer' && video.site === 'YouTube'
+        );
+        
+        if (trailer) {
+            return `https://www.youtube.com/embed/${trailer.key}?autoplay=1&controls=1`;
+        }
+        
+        return null;
+    } catch (error) {
+        console.error('Error fetching trailer:', error);
+        return null;
+    }
+}

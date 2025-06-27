@@ -686,12 +686,26 @@ body::before {
 .video-container {
     width: 100%;
     margin-bottom: 2rem;
+    position: relative;
 }
 
-.video-container video {
+.video-container video,
+.video-container iframe {
     width: 100%;
     border-radius: 15px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.video-container iframe {
+    height: 400px;
+    border: none;
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+    .video-container iframe {
+        height: 250px;
+    }
 }
 
 .video-info h3 {
